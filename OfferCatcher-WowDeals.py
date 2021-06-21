@@ -2,16 +2,14 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import time
-
 from selenium.webdriver.common.keys import Keys
 
 options = Options()
 options.headless = True
-
 driver = webdriver.Chrome()
 driver.get("https://deals.souq.com/eg-en/wow-deals/c/15860")
 
-
+#Scrolling Page
 scrolls = 6
 while True:
     scrolls -= 1
@@ -27,30 +25,35 @@ while True:
     time.sleep(2)
     if scrolls < 0:
         break
-
 time.sleep(2)
 
+#Create CSV file columns
+df = pd.DataFrame(columns=['Product', 'Price', 'Discount', 'Link'])
 
-df = pd.DataFrame(columns=['Title', 'Discount', 'Link'])
+#Get item name
 prodTitle = driver.find_elements_by_xpath("//*[contains(@class,'itemTitle')]")
 for (idx, pTitle) in enumerate(prodTitle):
-    itemName = pTitle
-    df.loc[idx, 'Title'] = pTitle.text
+    df.loc[idx, 'Product'] = pTitle.text
     print(pTitle.text)
 
 
+#Get item Price
+prodPrice = driver.find_elements_by_xpath("//*[contains(@class,'is block sk-clr1')]")
+for (idx, pPrice) in enumerate(prodPrice):
+    df.loc[idx, 'Price'] = pPrice.text
+    print(pPrice.text)
+
+#Get item Discount
 prodDiscount = driver.find_elements_by_xpath("//*[contains(@class,'discounts-box')]")
 for (idx, pDis) in enumerate(prodDiscount):
-    itemDis = pDis
     df.loc[idx, 'Discount'] = pDis.text
     print(pDis.text)
 
-
-
+#Get item link
 links = driver.find_elements_by_css_selector(".title-row a")
 for (idx, iLink) in enumerate(links):
     df.loc[idx, 'Link'] = iLink.get_attribute('href')
     print(iLink.get_attribute("href"))
 
-df.to_csv('data.csv')
+df.to_csv('Discount.csv')
 driver.quit()
