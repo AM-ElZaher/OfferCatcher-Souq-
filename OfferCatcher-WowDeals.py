@@ -2,6 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import time
+import schedule
+import datetime
 from selenium.webdriver.common.keys import Keys
 
 options = Options()
@@ -46,8 +48,10 @@ for (idx, pPrice) in enumerate(prodPrice):
 #Get item Discount
 prodDiscount = driver.find_elements_by_xpath("//*[contains(@class,'discounts-box')]")
 for (idx, pDis) in enumerate(prodDiscount):
-    df.loc[idx, 'Discount'] = pDis.text
-    print(pDis.text)
+    noPerc = pDis.text.replace('%', '')
+    finalDic = noPerc.replace(' OFF','')
+    df.loc[idx, 'Discount'] = finalDic
+    print(finalDic)
 
 #Get item link
 links = driver.find_elements_by_css_selector(".title-row a")
