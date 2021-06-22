@@ -1,3 +1,8 @@
+import smtplib, ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
@@ -59,5 +64,34 @@ for (idx, iLink) in enumerate(links):
     df.loc[idx, 'Link'] = iLink.get_attribute('href')
     print(iLink.get_attribute("href"))
 
-df.to_csv('Discount.csv')
+
+#add collected items to table
+
+df.to_csv('new.csv')
 driver.quit()
+
+#Send Mail
+mail_content = '''Latest Discounts list for (wow deals) on Souq Egypt
+'''
+sender_address = '@gmail.com'
+sender_pass = 'PASSWORD'
+receiver_address = '@gmail.com'
+message = MIMEMultipart()
+message['From'] = sender_address
+message['To'] = receiver_address
+message['Subject'] = 'Latest Discounts list for (wow deals) on Souq Egypt'
+message.attach(MIMEText(mail_content, 'plain'))
+attach_file_name = 'new.csv'
+attach_file = open(attach_file_name, 'rb')
+payload = MIMEBase('application', 'octate-stream')
+payload.set_payload((attach_file).read())
+encoders.encode_base64(payload)
+payload.add_header('Content-Decomposition', 'attachment', filename=attach_file_name)
+message.attach(payload)
+session = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+session.ehlo()
+session.login(sender_address, sender_pass)
+text = message.as_string()
+session.sendmail(sender_address, receiver_address, text)
+session.quit()
+print('Mail Sent')
