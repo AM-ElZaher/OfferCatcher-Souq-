@@ -14,7 +14,7 @@ from selenium.webdriver.common.keys import Keys
 def job():
     options = Options()
     options.headless = True
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome()
     driver.get("https://deals.souq.com/eg-en/wow-deals/c/15860")
 
     # Scrolling Page
@@ -78,9 +78,9 @@ def job():
     # Send Mail
     mail_content = '''Latest Discounts list for (wow deals) on Souq Egypt
     '''
-    sender_address = '@gmail.com'
-    sender_pass = ''
-    receiver_address = '@gmail.com'
+    sender_address = 'techdified@gmail.com'
+    sender_pass = '9%iptr$akG4QHc'
+    receiver_address = 'amohsen2011@gmail.com'
     message = MIMEMultipart()
     message['From'] = sender_address
     message['To'] = receiver_address
@@ -100,9 +100,14 @@ def job():
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
     print('Mail Sent')
+    timeNow = datetime.datetime.now().__str__()
+    logfile = open('log.txt', 'a')
+    logfile.write('\n' + 'Last run: ' + ' ' + timeNow)
+    logfile.close()
+    
 
-# schedule.every(30).seconds.do(job)
-schedule.every(30).minutes.do(job)
+schedule.every(60).seconds.do(job)
+# schedule.every(2).minutes.do(job)
 # schedule.every().hour.do(job)
 # schedule.every().day.at("01:59").do(job)
 while 1:
