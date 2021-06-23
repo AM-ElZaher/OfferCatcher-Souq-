@@ -78,9 +78,9 @@ def job():
     # Send Mail
     mail_content = '''Latest Discounts list for (wow deals) on Souq Egypt
     '''
-    sender_address = 'techdified@gmail.com'
-    sender_pass = '9%iptr$akG4QHc'
-    receiver_address = 'amohsen2011@gmail.com'
+    sender_address = '@gmail.com'
+    sender_pass = ''
+    receiver_address = '@gmail.com'
     message = MIMEMultipart()
     message['From'] = sender_address
     message['To'] = receiver_address
