@@ -1,17 +1,26 @@
-import smtplib, ssl
+import datetime
+import os
+import smtplib
+import time
+from email import encoders
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
+import pandas as pd
+import schedule
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import pandas as pd
-import time
-import schedule
-import datetime
 from selenium.webdriver.common.keys import Keys
 
+try:
+    os.remove('final_Discounts.csv')
+    os.remove('Discount.csv')
+except:
+    print("No files")
+
+
 def job():
+
     options = Options()
     options.headless = True
     driver = webdriver.Chrome()
@@ -79,7 +88,7 @@ def job():
     mail_content = '''Latest Discounts list for (wow deals) on Souq Egypt
     '''
     sender_address = '@gmail.com'
-    sender_pass = ''
+    sender_pass = 'PASSWORD'
     receiver_address = '@gmail.com'
     message = MIMEMultipart()
     message['From'] = sender_address
@@ -104,10 +113,10 @@ def job():
     logfile = open('log.txt', 'a')
     logfile.write('\n' + 'Last run: ' + ' ' + timeNow)
     logfile.close()
-    
 
-schedule.every(60).seconds.do(job)
-# schedule.every(2).minutes.do(job)
+
+# schedule.every(20).seconds.do(job)
+schedule.every(20).minutes.do(job)
 # schedule.every().hour.do(job)
 # schedule.every().day.at("01:59").do(job)
 while 1:
